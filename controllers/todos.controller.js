@@ -37,18 +37,36 @@ async function addTodo(req, res, next) {
 }
 
 async function updateTodo(req, res, next) {
-    const randomQuote = await Quote.getRandomQuote();
+    const todoId = req.params.id;
+    const newTodoText = req.body.newText;
+
+    const todo = new Todo(newTodoText, todoId);
+
+    try {
+        await todo.save();
+    } catch (error) {
+        return next(error);
+    }
 
     res.json({
-        quote: randomQuote
+        message: "Updated todo.",
+        todo: todo
     });
 }
 
 async function deleteTodo(req, res, next) {
-    const randomQuote = await Quote.getRandomQuote();
+    const todoId = req.params.id;
+
+    const todo = new Todo(null, todoId);
+
+    try {
+        await todo.delete();
+    } catch (error) {
+        return next(error);
+    }
 
     res.json({
-        quote: randomQuote
+        message: "Todo deleted."
     });
 }
 
